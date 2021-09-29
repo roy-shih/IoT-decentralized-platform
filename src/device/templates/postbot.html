@@ -1,0 +1,73 @@
+{% extends "base.html" %}
+
+{% block main %}
+<!-- Modal -->
+<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">AI analysis Results</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <h5>Input:</h5>
+                <div>Device ID: <span id="rdeviceid"></span></div>
+                <div>Value: <span id="rvalue"></span></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container pt-5">
+    <div class="row justify-content-md-center">
+        <div class="col-md-7">
+            <h2 style="margin-bottom: 40px;">Sensor update test</h2>
+            <form action="" id="post-form">
+                {% csrf_token %}
+                <div class="form-group">
+                    <!-- <label for="PID">ID</label> -->
+                    <input type="text" step="0.1" class="form-control" id="DEVICEID" placeholder="Device ID" required>
+                </div>
+                <div class="form-group">
+                    <!-- <label for="PID">ID</label> -->
+                    <input type="number" step="0.1" class="form-control" id="VALUE" placeholder="Value" required>
+                </div>
+                <div class="form-group">
+                    <button type="submit" value="Submit" class="btn btn-primary" data-toggle="modal"
+                        data-target="#exampleModal" style='align-items: center;'>Update</button>
+                </div>
+
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).on('submit', '#post-form', function (e) {
+        e.preventDefault();
+        $.ajax({
+            type: 'POST',
+            url: '{% url "device:update" %}',
+            data: {
+                DEVICE_ID: $('#DEVICEID').val(),
+                VALUE: $('#VALUE').val(),
+                csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val(),
+                action: 'post'
+            },
+            success: function (json) {
+                console.log(json)
+                document.forms["post-form"].reset();
+                document.getElementById("rdeviceid").innerHTML = json.DEVICE_ID
+                document.getElementById("rvalue").innerHTML = json.VALUE
+            },
+            error: function (xhr, errmsg, err) {
+                console.log("no no")
+            }
+        });
+    })
+</script>
+
+{% endblock %}

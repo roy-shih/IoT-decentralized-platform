@@ -1,0 +1,121 @@
+{% extends "base.html" %}
+
+{% block main %}
+{% csrf_token %}
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+        aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <!-- <h1>SmartMT</h1> -->
+        <ul class="navbar-nav mr-auto">
+            <li class="nav-item active">
+                <a class="nav-link" href="/">控制中心<span class="sr-only">(current)</span></a>
+            </li>
+            <li class="nav-item active">
+                <a class="nav-link" href="/envir">環境感測<span class="sr-only">(current)</span></a>
+            </li>
+            <li class="nav-item active">
+                <a class="nav-link" href="/auto">自動化<span class="sr-only">(current)</span></a>
+            </li>
+        </ul>
+    </div>
+</nav>
+
+<div class="container pt-5">
+    <div class="row">
+
+        <h1>自動化</h1>
+
+        <table class="table">
+            <thead>
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">名稱</th>
+                    <th scope="col">條件</th>
+                    <th scope="col">開啟裝置ID</th>
+                    <th scope="col">關閉裝置ID</th>
+                    <th scope="col">啟用</th>
+                    <th scope="col">更新</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for data in autodata %}
+                <tr>
+                    <th scope="row">{{ data.id }}</th>
+                    <td>
+                        <input type="number" step="0.1" class="form-control" id="automation_name"
+                            placeholder="{{data.automation_name}}" required>
+                    </td>
+                    <td>
+                        <input type="number" step="0.1" class="form-control" id="sensor_condition"
+                            placeholder="{{data.sensor_condition }}" required>
+                    </td>
+                    <td>
+                        <input type="number" step="0.1" class="form-control" id="OpenDevice_ID"
+                            placeholder="{{data.OpenDevice_ID }}" required>
+                    </td>
+                    <td>
+                        <input type="number" step="0.1" class="form-control" id="closeDevice_ID"
+                            placeholder="{{data.closeDevice_ID }}" required>
+                    <td>
+                        <label class="switch">
+                            {% if data.Enable == True %}
+                            <input id=auto{{ data.id }} type="checkbox" onchange="handleClick(this)" checked>
+                            <span class="slider round"></span>
+                            {%else%}
+                            <input id=auto{{ data.id }} type="checkbox" onchange="handleClick(this)">
+                            <span class="slider round"></span>
+                            {% endif %}
+                        </label>
+                    </td>
+                    <td>
+                        <div class="form-group">
+                            <button type="submit" value="Submit" class="btn btn-primary" data-toggle="modal"
+                                data-target="#exampleModal" style='align-items: center;'>Update</button>
+                        </div>
+                    </td>
+                </tr>
+                {% endfor %}
+
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<script>
+
+    function handleClick(cb) {
+        $.ajax({
+            url: '{% url "device:submit_prediction" %}',
+            type: "POST",
+            dataType: 'text',
+
+            data: {
+                DEVICE_ID: cb.id,
+                STATUS: cb.checked,
+                csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val(),
+                action: 'post'
+            },
+            success: function (json) {
+                var response = JSON.parse(json);
+                name = cb.id + 'd'
+                if (response.Status == true) {
+                    document.getElementById(name).innerHTML = "開啟";
+                } else {
+                    document.getElementById(name).innerHTML = "關閉";
+                }
+                // console.log('{% url "device:submit_prediction" %}')
+                // document.getElementById(cb.id).checked = true;
+            },
+            error: function (xhr, errmsg, err) {
+                console.log("no no")
+                document.getElementById(cb.id).checked = false;
+            }
+        });
+        // console.log("Clicked, new value = " + cb.id + " " + cb.checked);
+    }
+</script>
+{% endblock %}

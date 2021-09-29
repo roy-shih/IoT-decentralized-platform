@@ -1,0 +1,494 @@
+{% extends "base.html" %}
+
+{% block main %}
+{% csrf_token %}
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+        aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <!-- <h1>SmartMT</h1> -->
+        <ul class="navbar-nav mr-auto">
+            <li class="nav-item active">
+                <a class="nav-link" href="/">控制中心<span class="sr-only">(current)</span></a>
+            </li>
+            <li class="nav-item active">
+                <a class="nav-link" href="/envir">環境感測<span class="sr-only">(current)</span></a>
+            </li>
+            <li class="nav-item active">
+                <a class="nav-link" href="/auto">自動化<span class="sr-only">(current)</span></a>
+            </li>
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" id="navbardrop" data-toggle="dropdown">
+                    場景
+                </a>
+                <div class="dropdown-menu">
+                    <a class="dropdown-item" onclick=openall()>全開</a>
+                    <a class="dropdown-item" onclick=closeall()>全關</a>
+                    {% for result in scenedata %}
+                    <a class="dropdown-item" id=scene{{result.id}}>{{result.SceneName}}</a>
+                    {% endfor %}
+                </div>
+            </li>
+        </ul>
+    </div>
+</nav>
+
+<div class="container pt-0">
+    <div class="row">
+        {% for result in fandata %}
+        <div class="col">
+            <div class="card">
+                <img src={{ result.fig }} alt="Avatar" style="width:50px;margin: 15px; margin-bottom: 30px;">
+                <div class="container">
+                    <h4><b>{{ result.name }}</b></h4>
+                    <p id={{ result.Device_ID }}d>{{ result.descriptuin}}</p>
+                    <label class="switch">
+                        {% if result.state == True %}
+                        <input id={{ result.Device_ID }} type="checkbox" onchange="handleClick(this)" checked>
+                        <span class="slider round"></span>
+                        {%else%}
+                        <input id={{ result.Device_ID }} type="checkbox" onchange="handleClick(this)">
+                        <span class="slider round"></span>
+                        {% endif %}
+                        <!-- <p id={{ result.Device_ID }}p>{{result.state}}</p> -->
+                    </label>
+                </div>
+            </div>
+            </td>
+        </div>
+        {% endfor %}
+    </div>
+    <div class="row">
+        {% for result in lightdata %}
+        <div class="col">
+            <div class="card">
+                <img src={{ result.fig }} alt="Avatar" style="width:50px;margin: 15px; margin-bottom: 30px;">
+                <div class="container">
+                    <h4><b>{{ result.name }}</b></h4>
+                    <p id={{ result.Device_ID }}d> {{ result.descriptuin}}</p>
+                    <label class="switch">
+                        {% if result.state == True %}
+                        <input id={{ result.Device_ID }} type="checkbox" onchange="handleClick(this)" checked>
+                        <span class="slider round"></span>
+                        {%else%}
+                        <input id={{ result.Device_ID }} type="checkbox" onchange="handleClick(this)">
+                        <span class="slider round"></span>
+                        {% endif %}
+                        <!-- <p id={{ result.Device_ID }}p>{{result.state}}</p> -->
+                    </label>
+                </div>
+            </div>
+            </td>
+        </div>
+
+        {% endfor %}
+    </div>
+    <div class="row">
+        {% for result in AirConditionerdata %}
+        <div class="col">
+            <div class="card">
+                <img src={{ result.fig }} alt="Avatar" style="width:50px;margin: 15px; margin-bottom: 30px;">
+                <div class="container">
+                    <h4><b>{{ result.name }}</b></h4>
+                    <p id={{ result.Device_ID }}d>{{ result.descriptuin}}</p>
+                    <label class="switch">
+                        {% if result.state == True %}
+                        <input id={{ result.Device_ID }} type="checkbox" onchange="handleClick(this)" checked>
+                        <span class="slider round"></span>
+                        {%else%}
+                        <input id={{ result.Device_ID }} type="checkbox" onchange="handleClick(this)">
+                        <span class="slider round"></span>
+                        {% endif %}
+                        <!-- <p id={{ result.Device_ID }}p>{{result.state}}</p> -->
+                    </label>
+                </div>
+            </div>
+            </td>
+        </div>
+        {% endfor %}
+    </div>
+    <div class="row">
+        {% for result in otherdata %}
+        <div class="col">
+            <div class="card">
+                <img src={{ result.fig }} alt="Avatar" style="width:50px;margin: 15px; margin-bottom: 30px;">
+                <div class="container">
+                    <h4><b>{{ result.name }}</b></h4>
+                    <p id={{ result.Device_ID }}d>{{ result.descriptuin}}</p>
+                    <label class="switch">
+                        {% if result.state == True %}
+                        <input id={{ result.Device_ID }} type="checkbox" onchange="handleClick(this)" checked>
+                        <span class="slider round"></span>
+                        {%else%}
+                        <input id={{ result.Device_ID }} type="checkbox" onchange="handleClick(this)">
+                        <span class="slider round"></span>
+                        {% endif %}
+                        <!-- <p id={{ result.Device_ID }}p>{{result.state}}</p> -->
+                    </label>
+                </div>
+            </div>
+            </td>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+<script>
+    function openall() {
+        "{% for result in fandata %}"
+        name = "{{ result.Device_ID }}" + 'd'
+        if (document.getElementById(name).innerHTML == "關閉") {
+            autohandleClick("{{ result.Device_ID }}", true);
+        }
+        "{% endfor %}"
+        "{% for result in lightdata %}"
+        name = "{{ result.Device_ID }}" + 'd'
+        if (document.getElementById(name).innerHTML == "關閉") {
+            autohandleClick("{{ result.Device_ID }}", true);
+        }
+        "{% endfor %}"
+        "{% for result in AirConditionerdata %}"
+        name = "{{ result.Device_ID }}" + 'd'
+        if (document.getElementById(name).innerHTML == "關閉") {
+            autohandleClick("{{ result.Device_ID }}", true);
+        }
+        "{% endfor %}"
+        "{% for result in otherdata %}"
+        name = "{{ result.Device_ID }}" + 'd'
+        if (document.getElementById(name).innerHTML == "關閉") {
+            autohandleClick("{{ result.Device_ID }}", true);
+        }
+        "{% endfor %}"
+    }
+
+    function closeall() {
+        "{% for result in fandata %}"
+        name = "{{ result.Device_ID }}" + 'd'
+        if (document.getElementById(name).innerHTML == "開啟") {
+            autohandleClick("{{ result.Device_ID }}", false);
+        }
+        "{% endfor %}"
+        "{% for result in lightdata %}"
+        name = "{{ result.Device_ID }}" + 'd'
+        if (document.getElementById(name).innerHTML == "開啟") {
+            autohandleClick("{{ result.Device_ID }}", false);
+        }
+        "{% endfor %}"
+        "{% for result in AirConditionerdata %}"
+        name = "{{ result.Device_ID }}" + 'd'
+        if (document.getElementById(name).innerHTML == "開啟") {
+            autohandleClick("{{ result.Device_ID }}", false);
+        }
+        "{% endfor %}"
+        "{% for result in otherdata %}"
+        name = "{{ result.Device_ID }}" + 'd'
+        if (document.getElementById(name).innerHTML == "開啟") {
+            autohandleClick("{{ result.Device_ID }}", false);
+        }
+        "{% endfor %}"
+    }
+
+
+    setInterval(() => {
+        "{% for result in lightdata %}"
+        $.ajax({
+            url: 'io/' + '{{ result.Device_ID }}',
+            type: 'get',
+            success: function (json) {
+                var response = JSON.stringify(json);
+                if (json.state == true) {
+                    name = "{{ result.Device_ID }}" + 'd'
+                    document.getElementById(name).innerHTML = "開啟";
+                    document.getElementById("{{ result.Device_ID }}").checked = true;
+                } else {
+                    name = "{{ result.Device_ID }}" + 'd'
+                    document.getElementById(name).innerHTML = "關閉";
+                    document.getElementById("{{ result.Device_ID }}").checked = false;
+
+                }
+            }
+        });
+        "{% endfor %}"
+        "{% for result in autodata %}"
+        var condi0 = "{{result.sensor_condition}}"
+        var condi = condi0.split(',');
+        $.ajax({
+            url: 'envir/sensor/' + condi[0],
+            type: 'get',
+            success: function (json) {
+                if ("{{result.Enable}}" == "True") {
+                    if (condi[1] == "&gt;" && json.value > parseFloat(condi[2])) {
+                        var device0 = "{{result.OpenDevice_ID}}"
+                        var device = device0.split(',');
+                        device.forEach(function (item, i) {
+                            name = item + 'd'
+                            // console.log(name);
+                            if (name != "noned") {
+                                if (document.getElementById(name).innerHTML == "關閉") {
+                                    autohandleClick(item, true);
+                                }
+                            }
+                        });
+                        var device0 = "{{result.closeDevice_ID}}"
+                        var device = device0.split(',');
+                        device.forEach(function (item, i) {
+                            name = item + 'd'
+                            // console.log(name);
+                            if (name != "noned") {
+                                if (document.getElementById(name).innerHTML == "開啟") {
+                                    autohandleClick(item, false);
+                                }
+                            }
+                        });
+                    } else if (condi[1] == "&lt;" && json.value < parseFloat(condi[2])) {
+                        var device0 = "{{result.OpenDevice_ID}}"
+                        var device = device0.split(',');
+                        device.forEach(function (item, i) {
+                            name = item + 'd'
+                            // console.log(name);
+                            if (name != "noned") {
+                                if (document.getElementById(name).innerHTML == "關閉") {
+                                    autohandleClick(item, true);
+                                }
+                            }
+                        });
+                        var device0 = "{{result.closeDevice_ID}}"
+                        var device = device0.split(',');
+                        device.forEach(function (item, i) {
+                            name = item + 'd'
+                            // console.log(name);
+                            if (name != "noned") {
+                                if (document.getElementById(name).innerHTML == "開啟") {
+                                    autohandleClick(item, false);
+                                }
+                            }
+                        });
+                    } else if (condi[1] == "=" && json.value == parseFloat(condi[2])) {
+                        var device0 = "{{result.OpenDevice_ID}}"
+                        var device = device0.split(',');
+                        device.forEach(function (item, i) {
+                            name = item + 'd'
+                            // console.log(name);
+                            if (name != "noned") {
+                                if (document.getElementById(name).innerHTML == "關閉") {
+                                    autohandleClick(item, true);
+                                }
+                            }
+                        });
+                        var device0 = "{{result.closeDevice_ID}}"
+                        var device = device0.split(',');
+                        device.forEach(function (item, i) {
+                            name = item + 'd'
+                            // console.log(name);
+                            if (name != "noned") {
+                                if (document.getElementById(name).innerHTML == "開啟") {
+                                    autohandleClick(item, false);
+                                }
+                            }
+                        });
+                    } else if (condi[1] == "&gt;=" && json.value >= parseFloat(condi[2])) {
+                        var device0 = "{{result.OpenDevice_ID}}"
+                        var device = device0.split(',');
+                        device.forEach(function (item, i) {
+                            name = item + 'd'
+                            console.log(name);
+                            if (name != "noned") {
+                                if (document.getElementById(name).innerHTML == "關閉") {
+                                    autohandleClick(item, true);
+                                }
+                            }
+                        });
+                        var device0 = "{{result.closeDevice_ID}}"
+                        var device = device0.split(',');
+                        device.forEach(function (item, i) {
+                            name = item + 'd'
+                            // console.log(name);
+                            if (name != "noned") {
+                                if (document.getElementById(name).innerHTML == "開啟") {
+                                    autohandleClick(item, false);
+                                }
+                            }
+                        });
+                    } else if (condi[1] == "&lt;=" && json.value <= parseFloat(condi[2])) {
+                        var device0 = "{{result.OpenDevice_ID}}"
+                        var device = device0.split(',');
+                        device.forEach(function (item, i) {
+                            name = item + 'd'
+                            // console.log(name);
+                            if (name != "noned") {
+                                if (document.getElementById(name).innerHTML == "關閉") {
+                                    autohandleClick(item, true);
+                                }
+                            }
+                        });
+                        var device0 = "{{result.closeDevice_ID}}"
+                        var device = device0.split(',');
+                        device.forEach(function (item, i) {
+                            name = item + 'd'
+                            // console.log(name);
+                            if (name != "noned") {
+                                if (document.getElementById(name).innerHTML == "開啟") {
+                                    autohandleClick(item, false);
+                                }
+                            }
+                        });
+                    } else if (condi[1] == "!=" && json.value != parseFloat(condi[2])) {
+                        var device0 = "{{result.OpenDevice_ID}}"
+                        var device = device0.split(',');
+                        device.forEach(function (item, i) {
+                            name = item + 'd'
+                            // console.log(name);
+                            if (name != "noned") {
+                                if (document.getElementById(name).innerHTML == "關閉") {
+                                    autohandleClick(item, true);
+                                }
+                            }
+                        });
+                        var device0 = "{{result.closeDevice_ID}}"
+                        var device = device0.split(',');
+                        device.forEach(function (item, i) {
+                            name = item + 'd'
+                            // console.log(name);
+                            if (name != "noned") {
+                                if (document.getElementById(name).innerHTML == "開啟") {
+                                    autohandleClick(item, false);
+                                }
+                            }
+                        });
+                    }
+                }
+
+
+
+            }
+        });
+        "{% endfor %}"
+
+        "{% for result in timerdata %}"
+        var time0 = "{{ result.time }}";
+        var time1 = time0.split(' ');
+        var time = time1[0].split(':');
+        if (time1[1] == "p.m.") {
+            time[0] = parseInt(time[0]) + 12
+        }
+        time[1] = parseInt(time[1])
+        var date = new Date();
+        // console.log("{{ result.time }}", time, date.getHours(), date.getMinutes())
+        if (time[0] == date.getHours() && time[1] == date.getMinutes()) {
+            var device0 = "{{result.OpenDevice_ID}}"
+            var device = device0.split(',');
+            device.forEach(function (item, i) {
+                name = item + 'd'
+                // console.log(name);
+                if (name != "noned") {
+                    if (document.getElementById(name).innerHTML == "關閉") {
+                        autohandleClick(item, true);
+                    }
+                }
+            });
+            var device0 = "{{result.closeDevice_ID}}"
+            var device = device0.split(',');
+            device.forEach(function (item, i) {
+                name = item + 'd'
+                // console.log(name);
+                if (name != "noned") {
+                    if (document.getElementById(name).innerHTML == "開啟") {
+                        autohandleClick(item, false);
+                    }
+                }
+            });
+        }
+
+        "{% endfor %}"
+    }, 1000);
+
+    function handleClick(cb) {
+        $.ajax({
+            url: '{% url "device:submit_prediction" %}',
+            type: "POST",
+            dataType: 'text',
+
+            data: {
+                DEVICE_ID: cb.id,
+                STATUS: cb.checked,
+                csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val(),
+                action: 'post'
+            },
+            success: function (json) {
+                var response = JSON.parse(json);
+                name = cb.id + 'd'
+                if (response.Status == true) {
+                    document.getElementById(name).innerHTML = "開啟";
+                } else {
+                    document.getElementById(name).innerHTML = "關閉";
+                }
+                // console.log('{% url "device:submit_prediction" %}')
+                // document.getElementById(cb.id).checked = true;
+            },
+            error: function (xhr, errmsg, err) {
+                console.log("no no")
+                document.getElementById(cb.id).checked = false;
+            }
+        });
+        // console.log("Clicked, new value = " + cb.id + " " + cb.checked);
+    }
+
+    "{% for result in scenedata %}"
+    sid = "#scene" + "{{result.id}}"
+    $(sid).click(function () {
+        console.log("{{result.OpenDevice_ID }}");
+        ondevicelist = "{{result.OpenDevice_ID }}"
+        closedevicelist = "{{result.closeDevice_ID}}"
+        var device = ondevicelist.split(',');
+        device.forEach(function (item, i) {
+            autohandleClick(item, true);
+        });
+        device = closedevicelist.split(',');
+        device.forEach(function (item, i) {
+            autohandleClick(item, false);
+        });
+    });
+    "{% endfor %}"
+
+    function autohandleClick(cb, ck) {
+        $.ajax({
+            url: '{% url "device:submit_prediction" %}',
+            type: "POST",
+            dataType: 'text',
+
+            data: {
+                DEVICE_ID: cb,
+                STATUS: ck,
+                csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val(),
+                action: 'post'
+            },
+            success: function (json) {
+                var response = JSON.parse(json);
+
+                name = cb + 'd'
+                // console.log(name);
+                if (name != "noned") {
+                    if (response.Status == true) {
+                        document.getElementById(name).innerHTML = "開啟";
+                    } else {
+                        document.getElementById(name).innerHTML = "關閉";
+                    }
+                }
+
+                // console.log('{% url "device:submit_prediction" %}')
+                // document.getElementById(cb.id).checked = true;
+            },
+            error: function (xhr, errmsg, err) {
+                console.log("no no")
+                document.getElementById(cb).checked = false;
+            }
+        });
+        // console.log("Clicked, new value = " + cb + " " + ck);
+    }
+
+
+</script>
+{% endblock %}
